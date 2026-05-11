@@ -210,32 +210,50 @@ private Connection connect() {
     // SORT ORDERS BY AMOUNT
     // ==================================================
 
-    public List<FoodOrder> sortByAmount() {
+   public List<FoodOrder> sortByAmount() {
 
-        List<FoodOrder> orders =
-                getAllOrders();
+    List<FoodOrder> orders =
+            new ArrayList<>();
 
-        Collections.sort(
-                orders,
-                new Comparator<FoodOrder>() {
+    String query =
+            "SELECT * FROM food_orders ORDER BY amount ASC";
 
-                    @Override
-                    public int compare(
-                            FoodOrder o1,
-                            FoodOrder o2
-                    ) {
+    try (
 
-                        return Double.compare(
-                                o1.getAmount(),
-                                o2.getAmount()
-                        );
-                    }
-                }
-        );
+            Connection con = connect();
 
-        return orders;
+            Statement st = con.createStatement();
+
+            ResultSet rs = st.executeQuery(query)
+
+    ) {
+
+        while(rs.next()) {
+
+            FoodOrder order =
+                    new FoodOrder(
+
+                            rs.getString("order_id"),
+
+                            rs.getString("customer_name"),
+
+                            rs.getString("restaurant"),
+
+                            rs.getDouble("amount"),
+
+                            rs.getString("status")
+                    );
+
+            orders.add(order);
+        }
+
+    } catch(Exception e) {
+
+        e.printStackTrace();
     }
 
+    return orders;
+}
     // ==================================================
     // PREMIUM ORDERS
     // ==================================================
